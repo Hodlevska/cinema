@@ -39,11 +39,11 @@ if (!empty($promo_code)) {
     $stmtPromo = $pdo->prepare("SELECT id, discount_percent, valid_until FROM promocodes WHERE code = ?");
     $stmtPromo->execute([$promo_code]);
     $promo = $stmtPromo->fetch();
-    
+
     if ($promo) {
         if (empty($promo['valid_until']) || $promo['valid_until'] >= date('Y-m-d')) {
             $promoId = $promo['id'];
-            $discountPercent = (int)$promo['discount_percent'];
+            $discountPercent = (int) $promo['discount_percent'];
         }
     }
 }
@@ -55,7 +55,7 @@ $barTotal = 0;
 $orderedProducts = [];
 
 if (!empty($selected_products)) {
-    $productIds = array_keys(array_filter($selected_products, function($qty) {
+    $productIds = array_keys(array_filter($selected_products, function ($qty) {
         return $qty > 0;
     }));
 
@@ -66,11 +66,11 @@ if (!empty($selected_products)) {
         $productsData = $stmtProd->fetchAll();
 
         foreach ($productsData as $prod) {
-            $qty = (int)$selected_products[$prod['id']];
+            $qty = (int) $selected_products[$prod['id']];
             if ($qty > 0) {
                 $sum = $prod['price'] * $qty;
                 $barTotal += $sum;
-                
+
                 $orderedProducts[] = [
                     'id' => $prod['id'],
                     'name' => $prod['name'],
@@ -101,7 +101,7 @@ $stmtInsertTicket = $pdo->prepare("
 
 foreach ($selected_seats as $seat) {
     list($row, $seatNum) = explode('_', $seat);
-    
+
     $stmtInsertTicket->execute([$show_id, $promoId, $orderId, $row, $seatNum]);
     $createdTickets[] = "Ряд $row, Місце $seatNum";
 }
@@ -112,7 +112,7 @@ if (!empty($orderedProducts)) {
         INSERT INTO order_items (order_id, product_id, quantity, unit_price) 
         VALUES (?, ?, ?, ?)
     ");
-    
+
     foreach ($orderedProducts as $item) {
         $stmtInsertItem->execute([$orderId, $item['id'], $item['qty'], $item['price']]);
     }
@@ -120,24 +120,37 @@ if (!empty($orderedProducts)) {
 ?>
 <!DOCTYPE html>
 <html lang="uk">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Чек замовлення — Cinema DB</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styles.css">
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Fira+Sans+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&display=swap" rel="stylesheet">
+
 </head>
+
 <body>
 
-    <header>
-        <h1>Cinema DB</h1>
-        <nav>
+    <nav>
+        <div class="logo-text">
+            <a><img class="logo" src="assets\img\red_logo.png" alt=""></a>
+            <h1>Кінотеатр</h1>
+        </div>
+        <div class="nav-a">
             <a href="index.php">Афіша</a>
-        </nav>
-    </header>
+            <a href="we-in-map.html">Як нас знайти</a>
+            <a href="about-us.html">Про нас</a>
+            <a href="news.php">Рейтинги</a>
+        </div>
 
+    </nav>
     <main class="checkout-page">
+
         <div class="ticket-receipt">
-            <h2>Дякуємо за покупку! 🎟️</h2>
+            <h2 class="thanks">Дякуємо за покупку!</h2>
             <p class="receipt-status">Замовлення №<?= $orderId ?> успішно оформлено та оплачено.</p>
 
             <hr>
@@ -155,10 +168,11 @@ if (!empty($orderedProducts)) {
                 <hr>
                 <div class="receipt-section">
                     <h3>Кінобар</h3>
-                    <ul>
+                    <ul class="list-check">
                         <?php foreach ($orderedProducts as $item): ?>
                             <li>
-                                <?= htmlspecialchars($item['name']) ?> x<?= $item['qty'] ?> — <?= number_format($item['sum'], 0) ?> грн
+                                <?= htmlspecialchars($item['name']) ?> x<?= $item['qty'] ?> —
+                                <?= number_format($item['sum'], 0) ?> грн
                             </li>
                         <?php endforeach; ?>
                     </ul>
@@ -169,7 +183,8 @@ if (!empty($orderedProducts)) {
             <?php if ($discountPercent > 0): ?>
                 <hr>
                 <div class="receipt-section">
-                    <p><strong>Застосовано промокод:</strong> <?= htmlspecialchars($promo_code) ?> (знижка <?= $discountPercent ?>%)</p>
+                    <p><strong>Застосовано промокод:</strong> <?= htmlspecialchars($promo_code) ?> (знижка
+                        <?= $discountPercent ?>%)</p>
                     <p><strong>Сума знижки:</strong> -<?= number_format($discountSum, 0) ?> грн</p>
                 </div>
             <?php endif; ?>
@@ -181,14 +196,17 @@ if (!empty($orderedProducts)) {
             </div>
 
             <div class="receipt-actions">
-                <a href="index.php" class="btn">Повернутися на головну</a>
+                <a href="index.php" class="btn-go-to-main">Повернутися на головну</a>
             </div>
         </div>
     </main>
 
-    <footer>
-        <p>&copy; <?= date('Y') ?> Cinema DB. Усі права захищені.</p>
-    </footer>
+        <footer>
+    <a class="email" href="mailto:cinema@gmail.com">cinema@gmail.com</a>
+    <a class="phone" href="tel:380123456780">+380 12 345 6789</a>
+    <p>&copy Cinema DB. Усі права захищені.</p>
+</footer>
 
 </body>
+
 </html>

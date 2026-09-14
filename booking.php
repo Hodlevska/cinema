@@ -61,6 +61,7 @@ foreach ($occupiedSeats as $ticket) {
                 <a href="index.php">Афіша</a>
                 <a href="about-us.html">Про нас</a>
                 <a href="we-in-map.html">Як нас знайти</a>
+                <a href="news.php">Рейтинги</a>
             </div>
 
         </nav>

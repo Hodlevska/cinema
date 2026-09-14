@@ -318,10 +318,10 @@ margin-bottom: 10px;
  display: grid;
  grid-template-columns: 1fr 1fr;
  max-height: 53vh;
- overflow-y: scroll;
- gap: 20px
- 
- 
+ overflow-y: auto;
+ gap: 20px;
+ padding-bottom: 50px; 
+    box-sizing: border-box;
 }
 .fog{
     
@@ -549,4 +549,163 @@ margin-top: 8px;
 
 .submit-bar-btn:hover{
     background-color: #cc2c32;
+}
+
+.checkout-page{
+    background-color: #A60B0F;
+    display: flex;
+    justify-content: center;
+}
+.ticket-receipt{
+    background-color: white;
+    width: 40%;
+    margin-top: 40px;
+    padding: 40px 50px;
+    border-radius: 10px;
+    box-shadow:8px 8px 12px  rgb(72, 12, 12);
+
+}
+.thanks{
+    text-decoration: none;
+    font-size: 40px;
+    margin: 0%;
+    margin-bottom: 20px;
+    text-align: center;
+    padding: 0;
+}
+.list-check, .list{
+    list-style: none;
+}
+.btn-go-to-main{
+     width: 100%;
+     display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    background-color: #A60B0F;
+    border-style: none;
+    color: white;
+    height: 45px;
+    margin-top: 20px;
+    border-radius: 10px;
+    font-size: 18px;
+}
+
+
+.btn-go-to-main:hover{
+    background-color: #cc2c32;
+}
+
+.stats-container{
+    display: flex;
+    flex-direction: row;
+    margin-inline: 85px;
+    justify-content: space-between;
+    padding-bottom: 80px;
+}
+.poster-rating{
+    width: 150px;
+    height: 200px;
+    object-fit: cover;
+}
+ .food-rating{
+        width: 200px;
+    height: 200px;
+    object-fit: cover;
+}
+.stat-block-1, .stat-block-2, .stat-block-3, .stat-block-4{
+ background-color: white;
+ border-radius: 20px;
+box-shadow:4px 4px 10px  rgb(174, 174, 174);
+max-width: 460px;
+padding: 20px;
+}
+.stat-block-3, .stat-block-4{
+   width: 300px; 
+}
+.title-statistic{
+    text-decoration: none;
+    margin: 0;
+    text-align: center;
+}
+.static-title{
+    color: #A60B0F;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 26px;
+    margin-bottom: 20px;
+ 
+}
+.list{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px;
+    
+}
+.film-block{
+    display: flex;
+    flex-direction: column;
+    
+   
+}
+.film-name, .food-name{
+    font-size: 20px;
+    color: #A60B0F;
+    margin: 0;
+    padding: 0%;
+    font-weight: 600;
+    text-align: start;
+}
+.food-info-block{
+    display: flex;
+    flex-direction: column;
+}
+.frame{
+    z-index: 0;
+    position:relative;
+    width: 200px;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 0;
+}
+.stat-block-3{
+    position: relative
+}
+
+.stat-big-number{
+   color: #A60B0F;
+    font-weight: 900;
+    font-size: 45px; /* Зробимо трохи більшим, щоб гарно виглядало всередині рамки */
+    text-align: center;
+    
+    /* Позиціонуємо число рівно по центру поверх картинки */
+    position: absolute;
+    top: 63%; 
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+
+}
+.blocks-3-and-4{
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+.stat-highlight{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+.popular-film-poster{
+    width: 80%;
+    margin-bottom: 25px;
+
+}
+.info-popular-film{
+    font-size: 20px ;
+}
+.red{
+    color: #A60B0F;
+    font-weight: 800;
 }

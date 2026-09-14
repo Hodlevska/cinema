@@ -48,7 +48,6 @@ $products = $stmtProducts->fetchAll();
         rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <style>
-        /* Додаємо стилі для коректного відображення лінії, якщо в CSS вони скинуті */
         .line {
             border: none;
             height: 1px;
@@ -70,6 +69,7 @@ $products = $stmtProducts->fetchAll();
             <a href="index.php">Афіша</a>
             <a href="about-us.html">Про нас</a>
             <a href="we-in-map.html">Як нас знайти</a>
+            <a href="news.php">Рейтинги</a>
         </div>
     </nav>
 
@@ -121,21 +121,19 @@ $products = $stmtProducts->fetchAll();
                 <p><strong>Сума за квитки:</strong> <span id="ticketsTotal"
                         data-price="<?= $ticketsTotal ?>"><?= number_format($ticketsTotal, 0) ?></span> грн
                     (<?= $ticketsCount ?> шт.)</p>
-                    <hr class="line">
+                <hr class="line">
                 <p><strong>Обрані товари з бару:</strong> </p>
                 <span id="selectedProductsSummary">Нічого не обрано</span>
                 
-                <!-- Блок введення промокоду -->
+                <!-- Блок введення промокоду залишено на своєму місці, але додано атрибут form для зв'язку з формою -->
                 <div class="promo-section">
                     <label for="promo_code_input"><strong>Маєте промокод?</strong></label>
                     <div class="promocode-container">
-                        <input type="text" id="promo_code_input" name="promo_code" placeholder="Введіть промокод">
+                        <input type="text" id="promo_code_input" name="promo_code" form="barForm" placeholder="Введіть промокод">
                         <button type="button" id="applyPromoBtn" class="btn">Застосувати</button>
                     </div>
                     <p id="promoMessage"></p>
                 </div>
-                           
-                
 
                 <div class="booking-summ">
                     <h3 class="price-of-all-title">Загальна сума: </h3>

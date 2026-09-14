@@ -31,28 +31,34 @@ $shows = $stmtShows->fetchAll();
 ?>
 <!DOCTYPE html>
 <html lang="uk">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($movie['title']) ?> — Вибір сеансу</title>
     <link rel="stylesheet" href="styles.css">
     
+
+
 </head>
+
 <body>
 
-       <nav>
-            <div class="logo-text">
-                <a><img class="logo" src="assets\img\red_logo.png" alt=""></a>
-                <h1>Кінотеатр</h1>
-            </div>
-            <div class="nav-a">
-                <a href="index.php">Афіша</a>
-                <a href="we-in-map.html">Як нас знайти</a>
-                <a href="about-us.html">Про нас</a>
-            </div>
+    <nav>
+        <div class="logo-text">
+            <a><img class="logo" src="assets\img\red_logo.png" alt=""></a>
+            <h1>Кінотеатр</h1>
+        </div>
+        <div class="nav-a">
+            <a href="index.php">Афіша</a>
+            <a href="we-in-map.html">Як нас знайти</a>
+            <a href="about-us.html">Про нас</a>
+            <a href="rating.php">Рейтинги</a>
+            
+        </div>
 
-        </nav>
-    
+    </nav>
+
     <main class="movie-details-page">
         <div class="movie-poster-box">
             <img src="<?= htmlspecialchars($movie['poster_url']) ?>" alt="<?= htmlspecialchars($movie['title']) ?>">
@@ -60,16 +66,16 @@ $shows = $stmtShows->fetchAll();
 
         <div class="movie-info-box">
             <div class="container-title-of-this-film">
-            <h2 class="title-of-this-film"><?= htmlspecialchars($movie['title']) ?></h2>
-            <p class="age-restriction-of-this-film"> <?= htmlspecialchars($movie['age_restriction']) ?></p>
+                <h2 class="title-of-this-film"><?= htmlspecialchars($movie['title']) ?></h2>
+                <p class="age-restriction-of-this-film"> <?= htmlspecialchars($movie['age_restriction']) ?></p>
 
             </div>
-            
+
             <p class="genre"><strong>Жанр:</strong> <?= htmlspecialchars($movie['genre']) ?></p>
             <p class="duration"><strong>Тривалість:</strong> <?= $movie['duration_min'] ?> хв</p>
-            
+
             <hr>
-            
+
             <h3 class="sianses-title">Доступні сеанси</h3>
             <div class="fog"></div>
             <div class="shows-list">
@@ -82,20 +88,22 @@ $shows = $stmtShows->fetchAll();
                                 <span class="time"><?= date('H:i', strtotime($show['start_time'])) ?></span>
                                 <span class="date"><?= date('d.m.Y', strtotime($show['start_time'])) ?></span>
                             </div>
-                            <span class="hall">Зал №<?= $show['hall_number'] ?> (<?= htmlspecialchars($show['technology']) ?>)</span>
+                            <span class="hall">Зал №<?= $show['hall_number'] ?>
+                                (<?= htmlspecialchars($show['technology']) ?>)</span>
                             <span class="price"><?= number_format($show['ticket_price'], 0) ?>₴</span>
                         </a>
-                       
+
                     <?php endforeach; ?>
                 <?php endif; ?>
             </div>
         </div>
     </main>
     <footer>
-    <a class="email" href="mailto:cinema@gmail.com">cinema@gmail.com</a>
-    <a class="phone" href="tel:380123456780">+380 12 345 6789</a>
-    <p>&copy Cinema DB. Усі права захищені.</p>
-</footer>
+        <a class="email" href="mailto:cinema@gmail.com">cinema@gmail.com</a>
+        <a class="phone" href="tel:380123456780">+380 12 345 6789</a>
+        <p>&copy Cinema DB. Усі права захищені.</p>
+    </footer>
 
 </body>
+
 </html>

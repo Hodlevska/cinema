@@ -30,6 +30,7 @@ $movies = $stmt->fetchAll();
             <div class="nav-a">
                 <a href="about-us.html">Про нас</a>
                 <a href="we-in-map.html">Як нас знайти</a>
+                <a href="rating.php">Рейтинги</a>
             </div>
 
         </nav>
