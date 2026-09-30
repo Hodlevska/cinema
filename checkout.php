@@ -31,16 +31,17 @@ if (!$show) {
     die('Сеанс не знайдено');
 }
 
-// 2. Перевірка промокоду в базі даних
+// 2. Перевірка промокоду в базі даних (включаючи перевірку is_used та дати)
 $promoId = null;
 $discountPercent = 0;
 
 if (!empty($promo_code)) {
-    $stmtPromo = $pdo->prepare("SELECT id, discount_percent, valid_until FROM promocodes WHERE code = ?");
+    $stmtPromo = $pdo->prepare("SELECT id, discount_percent, valid_until, is_used FROM promocodes WHERE code = ?");
     $stmtPromo->execute([$promo_code]);
     $promo = $stmtPromo->fetch();
 
-    if ($promo) {
+    // Перевіряємо: чи існує, чи не використаний (is_used == 0) і чи дійсний по даті
+    if ($promo && $promo['is_used'] == 0) {
         if (empty($promo['valid_until']) || $promo['valid_until'] >= date('Y-m-d')) {
             $promoId = $promo['id'];
             $discountPercent = (int) $promo['discount_percent'];
@@ -83,16 +84,19 @@ if (!empty($selected_products)) {
     }
 }
 
-$subtotal = $ticketsTotal + $barTotal;
-$discountSum = ($subtotal * $discountPercent) / 100;
-$grandTotal = $subtotal - $discountSum;
+// Знижка нараховується ВИКЛЮЧНО на суму квитків
+$discountSum = ($ticketsTotal * $discountPercent) / 100;
+$finalTicketsTotal = $ticketsTotal - $discountSum;
+
+// Загальна сума = квитки зі знижкою + бар без змін
+$grandTotal = $finalTicketsTotal + $barTotal;
 
 // 4. Зберігаємо замовлення в таблицю orders
 $stmtInsertOrder = $pdo->prepare("INSERT INTO orders (order_date, total_price) VALUES (NOW(), ?)");
 $stmtInsertOrder->execute([$grandTotal]);
 $orderId = $pdo->lastInsertId();
 
-// 5. Зберігаємо квитки (без передачі price)
+// 5. Зберігаємо квитки
 $createdTickets = [];
 $stmtInsertTicket = $pdo->prepare("
     INSERT INTO tickets (show_id, promocode_id, order_id, `row_number`, `seat_number`, status) 
@@ -106,7 +110,13 @@ foreach ($selected_seats as $seat) {
     $createdTickets[] = "Ряд $row, Місце $seatNum";
 }
 
-// 6. Зберігаємо товари з бару в таблицю order_items
+// 6. Якщо промокод був успішно застосований, робимо його використаним (is_used = 1)
+if ($promoId) {
+    $stmtUpdatePromo = $pdo->prepare("UPDATE promocodes SET is_used = 1 WHERE id = ?");
+    $stmtUpdatePromo->execute([$promoId]);
+}
+
+// 7. Зберігаємо товари з бару в таблицю order_items
 if (!empty($orderedProducts)) {
     $stmtInsertItem = $pdo->prepare("
         INSERT INTO order_items (order_id, product_id, quantity, unit_price) 
@@ -126,10 +136,9 @@ if (!empty($orderedProducts)) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Чек замовлення — Cinema DB</title>
     <link rel="stylesheet" href="styles.css">
-     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Fira+Sans+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&display=swap" rel="stylesheet">
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Fira+Sans+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -145,7 +154,6 @@ if (!empty($orderedProducts)) {
             <a href="about-us.html">Про нас</a>
             <a href="news.php">Рейтинги</a>
         </div>
-
     </nav>
     <main class="checkout-page">
 
@@ -184,7 +192,7 @@ if (!empty($orderedProducts)) {
                 <hr>
                 <div class="receipt-section">
                     <p><strong>Застосовано промокод:</strong> <?= htmlspecialchars($promo_code) ?> (знижка
-                        <?= $discountPercent ?>%)</p>
+                        <?= $discountPercent ?>% на квитки)</p>
                     <p><strong>Сума знижки:</strong> -<?= number_format($discountSum, 0) ?> грн</p>
                 </div>
             <?php endif; ?>
@@ -201,11 +209,11 @@ if (!empty($orderedProducts)) {
         </div>
     </main>
 
-        <footer>
-    <a class="email" href="mailto:cinema@gmail.com">cinema@gmail.com</a>
-    <a class="phone" href="tel:380123456780">+380 12 345 6789</a>
-    <p>&copy Cinema DB. Усі права захищені.</p>
-</footer>
+    <footer>
+        <a class="email" href="mailto:cinema@gmail.com">cinema@gmail.com</a>
+        <a class="phone" href="tel:380123456780">+380 12 345 6789</a>
+        <p>&copy Cinema DB. Усі права захищені.</p>
+    </footer>
 
 </body>
 

@@ -231,7 +231,7 @@ iframe{
     display: flex;
     flex-direction: row;
     gap: 50px;
-    padding-inline: 130px;
+    padding-inline: 115px;
     padding-block: 35px;
 }
 .movie-poster-box{
@@ -292,7 +292,7 @@ margin-bottom: 10px;
     background-color: #A60B0F;
     height: 75px;
     padding-inline: 15px;
-    width: 430px;
+    width: 400px;
     color: white;
     text-decoration: none;
     border-radius: 10px;
@@ -336,7 +336,7 @@ margin-bottom: 10px;
 .booking-page{
     padding-bottom: 30px;
 }
-.film-name{
+.film-name-1{
     text-decoration: none;
     text-align: center;
     margin: 0;
@@ -599,7 +599,7 @@ margin-top: 8px;
 .stats-container{
     display: flex;
     flex-direction: row;
-    margin-inline: 85px;
+    margin-inline: 75px;
     justify-content: space-between;
     padding-bottom: 80px;
 }

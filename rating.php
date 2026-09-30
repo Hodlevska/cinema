@@ -37,11 +37,11 @@ $avgTickets = $stmtAvgTickets->fetch()['avg_tickets'] ?? 0;
 
 // 4. Сеанс із найбільшою кількістю заброньованих місць у залі
 $stmtMaxShowSeats = $pdo->query("
-    SELECT m.title, m.poster_url, h.hall_number, COUNT(t.id) AS booked_seats, s.start_time
+    SELECT s.id AS show_id, m.title, m.poster_url, h.hall_number, s.start_time, COUNT(t.id) AS booked_seats
     FROM shows s
     JOIN movies m ON s.movie_id = m.id
     JOIN halls h ON s.hall_id = h.id
-    JOIN tickets t ON s.id = t.show_id
+    LEFT JOIN tickets t ON s.id = t.show_id
     GROUP BY s.id, m.title, m.poster_url, h.hall_number, s.start_time
     ORDER BY booked_seats DESC
     LIMIT 1
@@ -166,9 +166,7 @@ $maxShow = $stmtMaxShowSeats->fetch();
 
         </div>
 
-        <div class="news-actions">
-            <a href="index.php" class="btn">Повернутися на головну</a>
-        </div>
+
     </main>
 
     <footer>

@@ -125,7 +125,6 @@ $products = $stmtProducts->fetchAll();
                 <p><strong>Обрані товари з бару:</strong> </p>
                 <span id="selectedProductsSummary">Нічого не обрано</span>
                 
-                <!-- Блок введення промокоду залишено на своєму місці, але додано атрибут form для зв'язку з формою -->
                 <div class="promo-section">
                     <label for="promo_code_input"><strong>Маєте промокод?</strong></label>
                     <div class="promocode-container">
@@ -185,9 +184,12 @@ $products = $stmtProducts->fetchAll();
                 selectedProductsSummary.textContent = 'Нічого не обрано';
             }
 
-            let subtotal = ticketsTotal + barTotal;
-            let discount = (subtotal * currentDiscountPercent) / 100;
-            let finalTotal = subtotal - discount;
+            // Знижка рахується ТІЛЬКИ від вартості квитків (ticketsTotal)
+            let ticketDiscount = (ticketsTotal * currentDiscountPercent) / 100;
+            let finalTicketsTotal = ticketsTotal - ticketDiscount;
+
+            // Загальна сума = квитки зі знижкою + бар без змін
+            let finalTotal = finalTicketsTotal + barTotal;
 
             grandTotalDisplay.textContent = Math.round(finalTotal) + " грн";
         }
@@ -207,7 +209,7 @@ $products = $stmtProducts->fetchAll();
                 if (data.success) {
                     currentDiscountPercent = data.discount;
                     promoMessage.style.color = '#4caf50';
-                    promoMessage.textContent = `Промокод успішно застосовано! Знижка: ${data.discount}%`;
+                    promoMessage.textContent = `Промокод успішно застосовано! Знижка: ${data.discount}% (тільки на квитки)`;
                     updateTotals();
                 } else {
                     currentDiscountPercent = 0;

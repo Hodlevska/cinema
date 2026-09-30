@@ -9,8 +9,8 @@ if (empty($code)) {
     exit;
 }
 
-// Шукаємо промокод у базі даних (відповідно до твоєї структури таблиці promocodes)
-$stmt = $pdo->prepare("SELECT id, discount_percent, valid_until FROM promocodes WHERE code = ?");
+// Шукаємо промокод у базі даних (включаючи перевірку поля is_used)
+$stmt = $pdo->prepare("SELECT id, discount_percent, valid_until, is_used FROM promocodes WHERE code = ?");
 $stmt->execute([$code]);
 $promo = $stmt->fetch();
 
@@ -19,7 +19,13 @@ if (!$promo) {
     exit;
 }
 
-// Перевірка терміну дії (якщо задано valid_until)
+// 1. Перевірка, чи промокод уже використовувався
+if ($promo['is_used'] == 1) {
+    echo json_encode(['success' => false, 'message' => 'Цей промокод уже був використаний']);
+    exit;
+}
+
+// 2. Перевірка терміну дії (якщо задано valid_until)
 if (!empty($promo['valid_until']) && $promo['valid_until'] < date('Y-m-d')) {
     echo json_encode(['success' => false, 'message' => 'Термін дії промокоду минув']);
     exit;

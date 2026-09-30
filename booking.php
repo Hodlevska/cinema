@@ -61,13 +61,13 @@ foreach ($occupiedSeats as $ticket) {
                 <a href="index.php">Афіша</a>
                 <a href="about-us.html">Про нас</a>
                 <a href="we-in-map.html">Як нас знайти</a>
-                <a href="news.php">Рейтинги</a>
+                <a href="rating.php">Рейтинги</a>
             </div>
 
         </nav>
 
     <main class="booking-page">
-        <h2 class="film-name"><?= htmlspecialchars($show['title']) ?></h2>
+        <h2 class="film-name-1"><?= htmlspecialchars($show['title']) ?></h2>
         <p class="show-meta">
             Зал №<?= $show['hall_number'] ?> |
             <?= date('d.m.Y H:i', strtotime($show['start_time'])) ?> |
